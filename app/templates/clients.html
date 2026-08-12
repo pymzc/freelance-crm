@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+<header class="page-header">
+    <div>
+        <p class="eyebrow">База контактов</p>
+        <h1>Клиенты</h1>
+        <p class="page-subtitle">Контакты, статусы и история работы.</p>
+    </div>
+    <a class="button button-primary" href="/clients/new">Добавить клиента</a>
+</header>
+
+<section class="panel">
+    <form class="filter-bar" method="get" action="/clients">
+        <label class="search-field">
+            <span class="sr-only">Поиск</span>
+            <input type="search" name="q" value="{{ q }}" placeholder="Имя, компания или почта">
+        </label>
+        <label>
+            <span class="sr-only">Статус</span>
+            <select name="client_status">
+                <option value="">Все статусы</option>
+                {% for value, label in client_statuses.items() %}
+                    <option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <button class="button button-secondary" type="submit">Найти</button>
+        {% if q or selected_status %}<a class="reset-link" href="/clients">Сбросить</a>{% endif %}
+    </form>
+
+    {% if clients %}
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Клиент</th>
+                        <th>Контакты</th>
+                        <th>Статус</th>
+                        <th>Добавлен</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for client in clients %}
+                        <tr>
+                            <td>
+                                <a class="client-cell" href="/clients/{{ client.id }}">
+                                    <span class="avatar">{{ client.name[0]|upper }}</span>
+                                    <span>
+                                        <strong>{{ client.name }}</strong>
+                                        <small>{{ client.company or "Без компании" }}</small>
+                                    </span>
+                                </a>
+                            </td>
+                            <td>
+                                <span class="contact-line">{{ client.email or "—" }}</span>
+                                <small>{{ client.phone }}</small>
+                            </td>
+                            <td><span class="badge badge-{{ client.status }}">{{ client_statuses[client.status] }}</span></td>
+                            <td class="muted">{{ client.created_at.strftime('%d.%m.%Y') }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <span class="empty-icon">◎</span>
+            <h2>Ничего не найдено</h2>
+            <p>{% if q or selected_status %}Попробуйте изменить фильтры.{% else %}Добавьте первый контакт, чтобы начать работу.{% endif %}</p>
+            {% if not q and not selected_status %}<a class="button button-primary" href="/clients/new">Добавить клиента</a>{% endif %}
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

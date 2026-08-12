@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Простая CRM для работы с клиентами и сделками">
+    <title>{{ title }} · Freelance CRM</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <a class="brand" href="/" aria-label="На главную">
+                <span class="brand-mark">F</span>
+                <span>
+                    <strong>Freelance</strong>
+                    <small>личная CRM</small>
+                </span>
+            </a>
+
+            <nav class="main-nav" aria-label="Основная навигация">
+                <a class="nav-link {% if page == 'dashboard' %}is-active{% endif %}" href="/">
+                    <span class="nav-icon">⌂</span> Обзор
+                </a>
+                <a class="nav-link {% if page == 'clients' %}is-active{% endif %}" href="/clients">
+                    <span class="nav-icon">◎</span> Клиенты
+                </a>
+                <a class="nav-link {% if page == 'deals' %}is-active{% endif %}" href="/deals">
+                    <span class="nav-icon">◇</span> Сделки
+                </a>
+            </nav>
+
+            <div class="sidebar-note">
+                <span class="status-dot"></span>
+                Данные хранятся локально
+            </div>
+        </aside>
+
+        <main class="main-content">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</body>
+</html>

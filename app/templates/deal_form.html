@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+<header class="page-header narrow-header">
+    <div>
+        <a class="back-link" href="/deals">← Назад</a>
+        <h1>Новая сделка</h1>
+        <p class="page-subtitle">Добавьте её в воронку продаж.</p>
+    </div>
+</header>
+
+<section class="panel form-panel">
+    {% if clients %}
+        <form class="entity-form" method="post" action="/deals/new">
+            <div class="form-grid">
+                <label class="field field-wide">
+                    <span>Название <b>*</b></span>
+                    <input type="text" name="title" minlength="2" maxlength="180" required autofocus placeholder="Например, разработка лендинга">
+                </label>
+                <label class="field">
+                    <span>Клиент <b>*</b></span>
+                    <select name="client_id" required>
+                        {% for client in clients %}
+                            <option value="{{ client.id }}" {% if selected_client_id == client.id %}selected{% endif %}>{{ client.name }}{% if client.company %} · {{ client.company }}{% endif %}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <label class="field">
+                    <span>Сумма, ₽ <b>*</b></span>
+                    <input type="number" name="amount" min="1" step="0.01" required placeholder="50000">
+                </label>
+                <label class="field field-wide">
+                    <span>Этап</span>
+                    <select name="stage">
+                        {% for value, label in deal_stages.items() %}
+                            <option value="{{ value }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+            </div>
+            <div class="form-actions">
+                <a class="button button-ghost" href="/deals">Отмена</a>
+                <button class="button button-primary" type="submit">Создать сделку</button>
+            </div>
+        </form>
+    {% else %}
+        <div class="empty-state">
+            <span class="empty-icon">◎</span>
+            <h2>Сначала добавьте клиента</h2>
+            <p>Каждая сделка должна быть привязана к контакту.</p>
+            <a class="button button-primary" href="/clients/new">Добавить клиента</a>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block content %}
+<header class="page-header">
+    <div>
+        <p class="eyebrow">Рабочее пространство</p>
+        <h1>Добрый день</h1>
+        <p class="page-subtitle">Всё важное по клиентам и сделкам в одном месте.</p>
+    </div>
+    <div class="header-actions">
+        <a class="button button-secondary" href="/clients/new">Добавить клиента</a>
+        <a class="button button-primary" href="/deals/new">Новая сделка</a>
+    </div>
+</header>
+
+<section class="stats-grid" aria-label="Ключевые показатели">
+    <article class="stat-card">
+        <span class="stat-label">Всего клиентов</span>
+        <strong class="stat-value">{{ client_count }}</strong>
+        <span class="stat-hint">{{ active_clients }} сейчас в работе</span>
+    </article>
+    <article class="stat-card accent-card">
+        <span class="stat-label">Активные клиенты</span>
+        <strong class="stat-value">{{ active_clients }}</strong>
+        <span class="stat-hint">со статусом «В работе»</span>
+    </article>
+    <article class="stat-card">
+        <span class="stat-label">В работе</span>
+        <strong class="stat-value">{{ pipeline|money }} ₽</strong>
+        <span class="stat-hint">сумма открытых сделок</span>
+    </article>
+    <article class="stat-card">
+        <span class="stat-label">Завершено</span>
+        <strong class="stat-value">{{ won_total|money }} ₽</strong>
+        <span class="stat-hint">выигранные сделки</span>
+    </article>
+</section>
+
+<div class="dashboard-grid">
+    <section class="panel">
+        <div class="panel-heading">
+            <div>
+                <p class="eyebrow">Контакты</p>
+                <h2>Новые клиенты</h2>
+            </div>
+            <a class="text-link" href="/clients">Все клиенты →</a>
+        </div>
+
+        {% if recent_clients %}
+            <div class="stack-list">
+                {% for client in recent_clients %}
+                    <a class="list-row" href="/clients/{{ client.id }}">
+                        <span class="avatar">{{ client.name[0]|upper }}</span>
+                        <span class="list-main">
+                            <strong>{{ client.name }}</strong>
+                            <small>{{ client.company or client.email or "Контакты не заполнены" }}</small>
+                        </span>
+                        <span class="badge badge-{{ client.status }}">{{ client_statuses[client.status] }}</span>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state compact-empty">
+                <p>Клиентов пока нет.</p>
+                <a class="text-link" href="/clients/new">Добавить первого</a>
+            </div>
+        {% endif %}
+    </section>
+
+    <section class="panel">
+        <div class="panel-heading">
+            <div>
+                <p class="eyebrow">Продажи</p>
+                <h2>Последние сделки</h2>
+            </div>
+            <a class="text-link" href="/deals">Все сделки →</a>
+        </div>
+
+        {% if recent_deals %}
+            <div class="stack-list">
+                {% for deal in recent_deals %}
+                    <div class="list-row">
+                        <span class="stage-sign stage-{{ deal.stage }}"></span>
+                        <span class="list-main">
+                            <strong>{{ deal.title }}</strong>
+                            <small>{{ deal.client.name }}</small>
+                        </span>
+                        <span class="deal-amount">{{ deal.amount|money }} ₽</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state compact-empty">
+                <p>Сделок пока нет.</p>
+                <a class="text-link" href="/deals/new">Создать первую</a>
+            </div>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

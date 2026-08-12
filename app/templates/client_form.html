@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<header class="page-header narrow-header">
+    <div>
+        <a class="back-link" href="{% if client %}/clients/{{ client.id }}{% else %}/clients{% endif %}">← Назад</a>
+        <h1>{% if client %}Редактировать клиента{% else %}Новый клиент{% endif %}</h1>
+        <p class="page-subtitle">Основная информация и текущий статус.</p>
+    </div>
+</header>
+
+<section class="panel form-panel">
+    <form class="entity-form" method="post" action="{{ form_action }}">
+        <div class="form-grid">
+            <label class="field field-wide">
+                <span>Имя <b>*</b></span>
+                <input type="text" name="name" value="{{ client.name if client else '' }}" minlength="2" maxlength="120" required autofocus placeholder="Например, Анна Волкова">
+            </label>
+            <label class="field">
+                <span>Компания</span>
+                <input type="text" name="company" value="{{ client.company if client else '' }}" maxlength="160" placeholder="Название компании">
+            </label>
+            <label class="field">
+                <span>Статус</span>
+                <select name="client_status">
+                    {% for value, label in client_statuses.items() %}
+                        <option value="{{ value }}" {% if client and client.status == value %}selected{% elif not client and value == 'lead' %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label class="field">
+                <span>Email</span>
+                <input type="email" name="email" value="{{ client.email if client else '' }}" maxlength="200" placeholder="name@example.com">
+            </label>
+            <label class="field">
+                <span>Телефон</span>
+                <input type="tel" name="phone" value="{{ client.phone if client else '' }}" maxlength="60" placeholder="+7 999 000-00-00">
+            </label>
+            <label class="field field-wide">
+                <span>Заметка</span>
+                <textarea name="note" rows="5" maxlength="2000" placeholder="О чём договорились, откуда пришёл клиент…">{{ client.note if client else '' }}</textarea>
+            </label>
+        </div>
+        <div class="form-actions">
+            <a class="button button-ghost" href="{% if client %}/clients/{{ client.id }}{% else %}/clients{% endif %}">Отмена</a>
+            <button class="button button-primary" type="submit">{% if client %}Сохранить{% else %}Добавить клиента{% endif %}</button>
+        </div>
+    </form>
+</section>
+{% endblock %}

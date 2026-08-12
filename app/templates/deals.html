@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+<header class="page-header">
+    <div>
+        <p class="eyebrow">Продажи</p>
+        <h1>Сделки</h1>
+        <p class="page-subtitle">Текущая воронка и завершённые проекты.</p>
+    </div>
+    <a class="button button-primary" href="/deals/new">Новая сделка</a>
+</header>
+
+<section class="panel">
+    <form class="filter-bar" method="get" action="/deals">
+        <label>
+            <span class="sr-only">Этап сделки</span>
+            <select name="stage">
+                <option value="">Все этапы</option>
+                {% for value, label in deal_stages.items() %}
+                    <option value="{{ value }}" {% if selected_stage == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <button class="button button-secondary" type="submit">Показать</button>
+        {% if selected_stage %}<a class="reset-link" href="/deals">Сбросить</a>{% endif %}
+    </form>
+
+    {% if deals %}
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Сделка</th>
+                        <th>Клиент</th>
+                        <th>Сумма</th>
+                        <th>Этап</th>
+                        <th><span class="sr-only">Действия</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for deal in deals %}
+                        <tr>
+                            <td>
+                                <span class="deal-name">
+                                    <span class="stage-sign stage-{{ deal.stage }}"></span>
+                                    <strong>{{ deal.title }}</strong>
+                                </span>
+                            </td>
+                            <td><a class="table-link" href="/clients/{{ deal.client.id }}">{{ deal.client.name }}</a></td>
+                            <td><strong>{{ deal.amount|money }} ₽</strong></td>
+                            <td>
+                                <form class="inline-form" method="post" action="/deals/{{ deal.id }}/stage">
+                                    <select name="stage" aria-label="Этап сделки {{ deal.title }}">
+                                        {% for value, label in deal_stages.items() %}
+                                            <option value="{{ value }}" {% if deal.stage == value %}selected{% endif %}>{{ label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <button class="small-button" type="submit">Ок</button>
+                                </form>
+                            </td>
+                            <td class="align-right">
+                                <form method="post" action="/deals/{{ deal.id }}/delete">
+                                    <button class="delete-button" type="submit" aria-label="Удалить сделку {{ deal.title }}">×</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <span class="empty-icon">◇</span>
+            <h2>Сделок пока нет</h2>
+            <p>Создайте сделку и укажите клиента, сумму и этап.</p>
+            <a class="button button-primary" href="/deals/new">Создать сделку</a>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

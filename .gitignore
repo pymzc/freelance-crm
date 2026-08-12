@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+.env
+crm.db
+test_crm.db
+.DS_Store
+.idea/
+.vscode/
